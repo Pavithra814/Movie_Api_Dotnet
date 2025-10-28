@@ -76,18 +76,26 @@ namespace MovieDbApi.Controllers
                 ReleaseDate = movieDto.ReleaseDate,
                 ImageUrl = movieDto.ImageUrl,
                 CreatedOn = DateTime.UtcNow,
-                IsDeleted = false
+                IsDeleted = false,
+
+                // New fields
+                RuntimeMinutes = movieDto.RuntimeMinutes,
+                Language = movieDto.Language,
+                Director = movieDto.Director,
+                LeadActor = movieDto.LeadActor,
+                LeadActress = movieDto.LeadActress,
+                SupportingActors = movieDto.SupportingActors,
+                Period = movieDto.Period
             };
 
-            await _movieService.AddMovieAsync(movie); // Add this method in service
+            await _movieService.AddMovieAsync(movie);
             return CreatedAtAction(nameof(GetMovieById), new { id = movie.Id }, movieDto);
         }
 
-        // PUT: api/movies/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMovie(int id, [FromBody] MovieDisplayDto movieDto)
         {
-            var existingMovie = await _movieService.GetMovieEntityByIdAsync(id); // Add this helper in service
+            var existingMovie = await _movieService.GetMovieEntityByIdAsync(id);
             if (existingMovie == null)
                 return NotFound(new { Message = $"Movie with ID {id} not found." });
 
@@ -100,10 +108,18 @@ namespace MovieDbApi.Controllers
             existingMovie.ImageUrl = movieDto.ImageUrl;
             existingMovie.UpdatedOn = DateOnly.FromDateTime(DateTime.UtcNow);
 
-            await _movieService.UpdateMovieAsync(existingMovie); // Add in service
+            // New fields
+            existingMovie.RuntimeMinutes = movieDto.RuntimeMinutes;
+            existingMovie.Language = movieDto.Language;
+            existingMovie.Director = movieDto.Director;
+            existingMovie.LeadActor = movieDto.LeadActor;
+            existingMovie.LeadActress = movieDto.LeadActress;
+            existingMovie.SupportingActors = movieDto.SupportingActors;
+            existingMovie.Period = movieDto.Period;
+
+            await _movieService.UpdateMovieAsync(existingMovie);
             return NoContent();
         }
-
         // DELETE: api/movies/{id}  (Soft Delete)
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMovie(int id)
@@ -138,6 +154,35 @@ namespace MovieDbApi.Controllers
 
             return Ok(response);
         }
+
+        // GET: api/movies/filter?field=director&value=Mani%20Ratnam&pageNumber=1&pageSize=10
+        [HttpGet("filter")]
+        public async Task<IActionResult> FilterMovies(
+            [FromQuery] string field,
+            [FromQuery] string value,
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10)
+        {
+            if (string.IsNullOrWhiteSpace(field) || string.IsNullOrWhiteSpace(value))
+                return BadRequest(new { Message = "Field and value parameters are required." });
+
+            var (movies, totalCount) = await _movieService.FilterByFieldAsync(field, value, pageNumber, pageSize);
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            var response = new
+            {
+                Field = field,
+                Value = value,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalPages = totalPages,
+                TotalCount = totalCount,
+                Movies = movies
+            };
+
+            return Ok(response);
+        }
+
 
     }
 }

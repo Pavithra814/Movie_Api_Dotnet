@@ -20,7 +20,9 @@ namespace MovieDbApi.Services
             {
                 Title = m.Title,
                 ReleaseDate = m.ReleaseDate,
-                ImageUrl = m.ImageUrl
+                ImageUrl = m.ImageUrl,
+                Language = m.Language,
+                AudienceRating = m.AudienceRating
             });
         }
 
@@ -36,7 +38,17 @@ namespace MovieDbApi.Services
                 AudienceRating = movie.AudienceRating,
                 AudienceCount = movie.AudienceCount,
                 Genres = movie.Genres,
-                ReleaseDate = movie.ReleaseDate
+                ReleaseDate = movie.ReleaseDate,
+                ImageUrl = movie.ImageUrl,
+
+                // New fields
+                RuntimeMinutes = movie.RuntimeMinutes,
+                Language = movie.Language,
+                Director = movie.Director,
+                LeadActor = movie.LeadActor,
+                LeadActress = movie.LeadActress,
+                SupportingActors = movie.SupportingActors,
+                Period = movie.Period
             };
         }
 
@@ -48,12 +60,13 @@ namespace MovieDbApi.Services
             {
                 Title = m.Title,
                 ReleaseDate = m.ReleaseDate,
-                ImageUrl = m.ImageUrl
+                ImageUrl = m.ImageUrl,
+                Language = m.Language,
+                AudienceRating = m.AudienceRating
             });
 
             return (movieDtos, totalCount);
         }
-
 
         public async Task AddMovieAsync(Movie movie)
         {
@@ -79,16 +92,32 @@ namespace MovieDbApi.Services
         {
             var (movies, totalCount) = await _movieRepository.GetPagedAsync(pageNumber, pageSize);
 
-            //Map Movie → MovieCardDto
             var movieDtos = movies.Select(m => new MovieCardDto
             {
                 Title = m.Title,
-                ReleaseDate = m.ReleaseDate, // adjust format as needed
-                ImageUrl = m.ImageUrl
+                ReleaseDate = m.ReleaseDate,
+                ImageUrl = m.ImageUrl,
+                Language = m.Language,
+                AudienceRating = m.AudienceRating
             });
 
             return (movieDtos, totalCount);
         }
 
+        public async Task<(IEnumerable<MovieCardDto> Movies, int TotalCount)> FilterByFieldAsync(string field, string value, int pageNumber, int pageSize)
+        {
+            var (movies, totalCount) = await _movieRepository.FilterByFieldAsync(field, value, pageNumber, pageSize);
+
+            var movieDtos = movies.Select(m => new MovieCardDto
+            {
+                Title = m.Title,
+                ImageUrl = m.ImageUrl,
+                ReleaseDate = m.ReleaseDate,
+                Language = m.Language,
+                AudienceRating = m.AudienceRating
+            });
+
+            return (movieDtos, totalCount);
+        }
     }
 }
