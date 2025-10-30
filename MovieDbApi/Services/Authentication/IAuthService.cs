@@ -7,5 +7,10 @@ namespace MovieDbApi.Services.Authentication
     {
         Task<User?> RegisterUserAsync(RegisterDto dto);
         Task<User?> LoginAsync(LoginDto dto);
+        //Task<IEnumerable<User>> GetAllUsersAsync();
+        Task<User?> GetUserByIdAsync(int id);
+
+        Task<User?> UpdateUserAsync(int id, UpdateUserDto dto);
+ 
     }
 }

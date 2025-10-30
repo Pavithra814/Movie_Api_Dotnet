@@ -56,5 +56,27 @@ namespace MovieDbApi.Services.Authentication
             var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
             return computedHash.SequenceEqual(storedHash);
         }
+
+        //public async Task<IEnumerable<User>> GetAllUsersAsync()
+        //{
+        //    return await _userRepository.GetAllUsersAsync();
+        //}
+
+        public async Task<User?> GetUserByIdAsync(int id)
+        {
+            return await _userRepository.GetUserByIdAsync(id);
+        }
+
+        public async Task<User?> UpdateUserAsync(int id, UpdateUserDto dto)
+        {
+            var user = await _userRepository.GetUserByIdAsync(id);
+            if (user == null) return null;
+
+            user.Name = dto.Name;
+            user.Email = dto.Email;
+
+            return await _userRepository.UpdateUserAsync(user);
+        }
+
     }
 }

@@ -9,5 +9,8 @@ namespace MovieDbApi.Repositories
         Task<User?> GetUserByIdAsync(int id);
         Task<bool> SoftDeleteUserAsync(int id);
         Task<bool> IsEmailExistsAsync(string email);
+        Task<IEnumerable<User>> GetAllUsersAsync();
+        Task<User?> UpdateUserAsync(User user);
+ 
     }
 }

@@ -26,12 +26,12 @@ namespace MovieDbApi.Models
 
         public string Genres { get; set; }
 
-        // 🔹 New fields
+        // New fields
         public int? RuntimeMinutes { get; set; } // Movie duration
         public string? Language { get; set; }
         public string? Director { get; set; }
-        public string? LeadActor { get; set; } // instead of "Hero"
-        public string? LeadActress { get; set; } // instead of "Heroine"
+        public string? LeadActor { get; set; } 
+        public string? LeadActress { get; set; } 
         public string? Period { get; set; } // e.g., "80s", "90s"
 
         // Comma-separated list for simplicity (or use a separate table for normalization)

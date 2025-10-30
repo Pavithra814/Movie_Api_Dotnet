@@ -58,6 +58,7 @@ namespace MovieDbApi.Services
 
             var movieDtos = movies.Select(m => new MovieCardDto
             {
+                Id = m.Id,
                 Title = m.Title,
                 ReleaseDate = m.ReleaseDate,
                 ImageUrl = m.ImageUrl,
@@ -94,6 +95,7 @@ namespace MovieDbApi.Services
 
             var movieDtos = movies.Select(m => new MovieCardDto
             {
+                Id = m.Id,
                 Title = m.Title,
                 ReleaseDate = m.ReleaseDate,
                 ImageUrl = m.ImageUrl,
@@ -110,6 +112,7 @@ namespace MovieDbApi.Services
 
             var movieDtos = movies.Select(m => new MovieCardDto
             {
+                Id = m.Id,
                 Title = m.Title,
                 ImageUrl = m.ImageUrl,
                 ReleaseDate = m.ReleaseDate,

@@ -34,5 +34,27 @@ namespace MovieDbApi.Controllers
 
             return Ok(new { user.Id, user.Name, user.Email });
         }
+
+        // ✅ GET: api/users/{id}
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserById(int id)
+        {
+            var user = await _authService.GetUserByIdAsync(id);
+            if (user == null)
+                return NotFound("User not found.");
+
+            return Ok(new { user.Id, user.Name, user.Email });
+        }
+
+        // ✅ PUT: api/users/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, UpdateUserDto dto)
+        {
+            var updatedUser = await _authService.UpdateUserAsync(id, dto);
+            if (updatedUser == null)
+                return NotFound("User not found.");
+
+            return Ok(new { updatedUser.Id, updatedUser.Name, updatedUser.Email });
+        }
     }
 }
