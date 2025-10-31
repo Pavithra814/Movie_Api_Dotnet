@@ -2,7 +2,7 @@
 using MovieApi.Models;
 using MovieDbApi.Data;
 
-namespace MovieApi.Repositories
+namespace MovieDbApi.Repositories
 {
     public class FavouriteRepository : IFavouriteRepository
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MovieDbApi.DTOs.Movie
 {
-    public class MovieDisplayDto
+    public class GetMovieByIdDto
     {
         public string Title { get; set; }
         public string ImageUrl { get; set; }

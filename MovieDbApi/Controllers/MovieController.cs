@@ -61,7 +61,7 @@ namespace MovieDbApi.Controllers
 
         // POST: api/movies
         [HttpPost]
-        public async Task<IActionResult> AddMovie([FromBody] MovieDisplayDto movieDto)
+        public async Task<IActionResult> AddMovie([FromBody] GetMovieByIdDto movieDto)
         {
             if (movieDto == null)
                 return BadRequest(new { Message = "Movie data is required." });
@@ -93,7 +93,7 @@ namespace MovieDbApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateMovie(int id, [FromBody] MovieDisplayDto movieDto)
+        public async Task<IActionResult> UpdateMovie(int id, [FromBody] GetMovieByIdDto movieDto)
         {
             var existingMovie = await _movieService.GetMovieEntityByIdAsync(id);
             if (existingMovie == null)

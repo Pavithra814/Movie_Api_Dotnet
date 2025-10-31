@@ -4,7 +4,7 @@ using MovieDbApi.Repositories;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace MovieDbApi.Services.Authentication
+namespace MovieDbApi.Services
 {
     public class AuthService : IAuthService
     {

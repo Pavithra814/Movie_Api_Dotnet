@@ -13,25 +13,26 @@ namespace MovieDbApi.Services
             _movieRepository = movieRepository;
         }
 
-        public async Task<IEnumerable<MovieCardDto>> GetAllMoviesAsync()
+        public async Task<IEnumerable<GetMovieDto>> GetAllMoviesAsync()
         {
             var movies = await _movieRepository.GetAllAsync();
-            return movies.Select(m => new MovieCardDto
+            return movies.Select(m => new GetMovieDto
             {
                 Title = m.Title,
                 ReleaseDate = m.ReleaseDate,
+                //ImageUrl = $"https://localhost:7048/Images/{m.ImageUrl}",
                 ImageUrl = m.ImageUrl,
                 Language = m.Language,
                 AudienceRating = m.AudienceRating
             });
         }
 
-        public async Task<MovieDisplayDto?> GetMovieByIdAsync(int id)
+        public async Task<GetMovieByIdDto?> GetMovieByIdAsync(int id)
         {
             var movie = await _movieRepository.GetByIdAsync(id);
             if (movie == null) return null;
 
-            return new MovieDisplayDto
+            return new GetMovieByIdDto
             {
                 Title = movie.Title,
                 StoryLine = movie.StoryLine,
@@ -39,6 +40,7 @@ namespace MovieDbApi.Services
                 AudienceCount = movie.AudienceCount,
                 Genres = movie.Genres,
                 ReleaseDate = movie.ReleaseDate,
+                //ImageUrl = $"https://localhost:7048/Images/{movie.ImageUrl}",
                 ImageUrl = movie.ImageUrl,
 
                 // New fields
@@ -52,15 +54,16 @@ namespace MovieDbApi.Services
             };
         }
 
-        public async Task<(IEnumerable<MovieCardDto> Movies, int TotalCount)> SearchPagedAsync(string query, int pageNumber, int pageSize)
+        public async Task<(IEnumerable<GetMovieDto> Movies, int TotalCount)> SearchPagedAsync(string query, int pageNumber, int pageSize)
         {
             var (movies, totalCount) = await _movieRepository.SearchPagedAsync(query, pageNumber, pageSize);
 
-            var movieDtos = movies.Select(m => new MovieCardDto
+            var movieDtos = movies.Select(m => new GetMovieDto
             {
                 Id = m.Id,
                 Title = m.Title,
                 ReleaseDate = m.ReleaseDate,
+                //ImageUrl = $"https://localhost:7048/Images/{m.ImageUrl}",
                 ImageUrl = m.ImageUrl,
                 Language = m.Language,
                 AudienceRating = m.AudienceRating
@@ -89,15 +92,16 @@ namespace MovieDbApi.Services
             return await _movieRepository.GetByIdAsync(id);
         }
 
-        public async Task<(IEnumerable<MovieCardDto> Movies, int TotalCount)> GetPagedAsync(int pageNumber, int pageSize)
+        public async Task<(IEnumerable<GetMovieDto> Movies, int TotalCount)> GetPagedAsync(int pageNumber, int pageSize)
         {
             var (movies, totalCount) = await _movieRepository.GetPagedAsync(pageNumber, pageSize);
 
-            var movieDtos = movies.Select(m => new MovieCardDto
+            var movieDtos = movies.Select(m => new GetMovieDto
             {
                 Id = m.Id,
                 Title = m.Title,
                 ReleaseDate = m.ReleaseDate,
+                //ImageUrl = $"https://localhost:7048/Images/{m.ImageUrl}",
                 ImageUrl = m.ImageUrl,
                 Language = m.Language,
                 AudienceRating = m.AudienceRating
@@ -106,14 +110,15 @@ namespace MovieDbApi.Services
             return (movieDtos, totalCount);
         }
 
-        public async Task<(IEnumerable<MovieCardDto> Movies, int TotalCount)> FilterByFieldAsync(string field, string value, int pageNumber, int pageSize)
+        public async Task<(IEnumerable<GetMovieDto> Movies, int TotalCount)> FilterByFieldAsync(string field, string value, int pageNumber, int pageSize)
         {
             var (movies, totalCount) = await _movieRepository.FilterByFieldAsync(field, value, pageNumber, pageSize);
 
-            var movieDtos = movies.Select(m => new MovieCardDto
+            var movieDtos = movies.Select(m => new GetMovieDto
             {
                 Id = m.Id,
                 Title = m.Title,
+                //ImageUrl = $"https://localhost:7048/Images/{m.ImageUrl}",
                 ImageUrl = m.ImageUrl,
                 ReleaseDate = m.ReleaseDate,
                 Language = m.Language,

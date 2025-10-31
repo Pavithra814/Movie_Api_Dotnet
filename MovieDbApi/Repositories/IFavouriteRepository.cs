@@ -1,6 +1,6 @@
 ﻿using MovieApi.Models;
 
-namespace MovieApi.Repositories
+namespace MovieDbApi.Repositories
 {
     public interface IFavouriteRepository
     {

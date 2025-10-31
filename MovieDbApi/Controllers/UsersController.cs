@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MovieDbApi.DTOs.User;
-using MovieDbApi.Services.Authentication;
+using MovieDbApi.Services;
 
 namespace MovieDbApi.Controllers
 {

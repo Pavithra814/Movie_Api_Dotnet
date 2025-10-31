@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MovieApi.Services;
+using MovieDbApi.Services;
 
 namespace MovieApi.Controllers
 {

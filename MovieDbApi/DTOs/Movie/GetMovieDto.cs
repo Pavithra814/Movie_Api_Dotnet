@@ -1,6 +1,6 @@
 ﻿namespace MovieDbApi.DTOs.Movie
 {
-    public class MovieCardDto
+    public class GetMovieDto
     {
         public int Id { get; set; }
         public string Title { get; set; }

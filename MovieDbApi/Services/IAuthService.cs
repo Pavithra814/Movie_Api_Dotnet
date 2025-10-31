@@ -1,7 +1,7 @@
 ﻿using MovieDbApi.DTOs.User;
 using MovieDbApi.Models;
 
-namespace MovieDbApi.Services.Authentication
+namespace MovieDbApi.Services
 {
     public interface IAuthService
     {

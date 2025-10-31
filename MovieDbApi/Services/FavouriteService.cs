@@ -1,7 +1,7 @@
 ﻿using MovieApi.Models;
-using MovieApi.Repositories;
+using MovieDbApi.Repositories;
 
-namespace MovieApi.Services
+namespace MovieDbApi.Services
 {
     public class FavouriteService : IFavouriteService
     {
