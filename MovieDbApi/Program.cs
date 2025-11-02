@@ -25,12 +25,11 @@ builder.Services.AddCors(options =>
 });
 
 // Registering Movie Module
+//builder.Services.AddScoped<IMovieService, MovieService>();
 builder.Services.AddScoped<IMovieRepository, MovieRepository>();
-builder.Services.AddScoped<IMovieService, MovieService>();
 
-// Registering Favourite Module 
 builder.Services.AddScoped<IFavouriteRepository, FavouriteRepository>();
-builder.Services.AddScoped<IFavouriteService, FavouriteService>();
+//builder.Services.AddScoped<IFavouriteService, FavouriteService>();
 
 // Registering User Module
 builder.Services.AddScoped<IUserRepository, UserRepository>();

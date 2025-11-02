@@ -23,6 +23,7 @@ namespace MovieDbApi.Repositories
         {
             return await _context.Favourites
                 .Where(f => f.UserId == userId)
+                .Include(f => f.Movie)
                 .ToListAsync();
         }
 
@@ -41,4 +42,5 @@ namespace MovieDbApi.Repositories
             await _context.SaveChangesAsync();
         }
     }
+
 }

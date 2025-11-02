@@ -16,7 +16,7 @@ namespace MovieDbApi.Models
         [Required]
         public string ImageUrl { get; set; }
 
-        public DateOnly? ReleaseDate { get; set; }
+        public string? ReleaseDate { get; set; }
 
         public string StoryLine { get; set; }
 

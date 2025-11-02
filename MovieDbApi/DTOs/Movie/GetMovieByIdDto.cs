@@ -7,7 +7,7 @@ namespace MovieDbApi.DTOs.Movie
     {
         public string Title { get; set; }
         public string ImageUrl { get; set; }
-        public DateOnly? ReleaseDate { get; set; }
+        public string? ReleaseDate { get; set; }
         public string StoryLine { get; set; }
         public double? AudienceRating { get; set; }
         public int? AudienceCount { get; set; }

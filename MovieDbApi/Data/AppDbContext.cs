@@ -27,11 +27,11 @@ namespace MovieDbApi.Data
 
             // ReleaseDate conversion
             modelBuilder.Entity<Movie>()
-                .Property(m => m.ReleaseDate)
-                .HasConversion(
-                    v => v.HasValue ? v.Value.ToDateTime(TimeOnly.MinValue) : (DateTime?)null,
-                    v => v.HasValue ? DateOnly.FromDateTime(v.Value) : (DateOnly?)null
-                );
+                .Property(m => m.ReleaseDate);
+                //.HasConversion(
+                //    v => v.HasValue ? v.Value.ToDateTime(TimeOnly.MinValue) : (DateTime?)null,
+                //    v => v.HasValue ? DateOnly.FromDateTime(v.Value) : (DateOnly?)null
+                //);
 
             //UserName Is Email and unique
             //modelBuilder.Entity<UserDetail>().HasIndex(u => u.Username).IsUnique();

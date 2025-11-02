@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MovieDbApi.Models;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MovieApi.Models
 {
@@ -10,5 +12,8 @@ namespace MovieApi.Models
         public int UserId { get; set; }
 
         public int MovieId { get; set; }
+
+        [ForeignKey("MovieId")]
+        public Movie Movie { get; set; }
     }
 }

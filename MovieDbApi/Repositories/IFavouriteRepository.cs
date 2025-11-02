@@ -10,4 +10,5 @@ namespace MovieDbApi.Repositories
         Task DeleteAsync(Favourite favourite);
         Task SaveChangesAsync();
     }
+
 }

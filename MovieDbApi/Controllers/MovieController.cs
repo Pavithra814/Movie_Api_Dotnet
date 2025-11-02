@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MovieDbApi.DTOs.Movie;
 using MovieDbApi.Models;
-using MovieDbApi.Services;
+using MovieDbApi.Repositories;
 
 namespace MovieDbApi.Controllers
 {
@@ -9,55 +9,60 @@ namespace MovieDbApi.Controllers
     [ApiController]
     public class MoviesController : ControllerBase
     {
-        private readonly IMovieService _movieService;
+        private readonly IMovieRepository _movieRepository;
 
-        public MoviesController(IMovieService movieService)
+        public MoviesController(IMovieRepository movieRepository)
         {
-            _movieService = movieService;
+            _movieRepository = movieRepository;
         }
 
         // GET: api/movies
         [HttpGet]
         public async Task<IActionResult> GetAllMovies()
         {
-            var movies = await _movieService.GetAllMoviesAsync();
-            return Ok(movies);
+            var movies = await _movieRepository.GetAllAsync();
+
+            var result = movies.Select(m => new GetMovieDto
+            {
+                Id = m.Id,
+                Title = m.Title,
+                ReleaseDate = m.ReleaseDate,
+                ImageUrl = m.ImageUrl,
+                Language = m.Language,
+                AudienceRating = m.AudienceRating
+            });
+
+            return Ok(result);
         }
 
         // GET: api/movies/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetMovieById(int id)
         {
-            var movie = await _movieService.GetMovieByIdAsync(id);
+            var movie = await _movieRepository.GetByIdAsync(id);
             if (movie == null)
                 return NotFound(new { Message = $"Movie with ID {id} not found." });
 
-            return Ok(movie);
-        }
-
-        // GET: api/movies/search?query=action&pageNumber=1&pageSize=10
-        [HttpGet("search")]
-        public async Task<IActionResult> SearchMovies([FromQuery] string query, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
-        {
-            if (string.IsNullOrWhiteSpace(query))
-                return BadRequest(new { Message = "Query parameter cannot be empty." });
-
-            var (movies, totalCount) = await _movieService.SearchPagedAsync(query, pageNumber, pageSize);
-
-            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
-
-            var response = new
+            var result = new GetMovieByIdDto
             {
-                PageNumber = pageNumber,
-                PageSize = pageSize,
-                TotalPages = totalPages,
-                TotalCount = totalCount,
-                Movies = movies
+                Title = movie.Title,
+                StoryLine = movie.StoryLine,
+                AudienceRating = movie.AudienceRating,
+                AudienceCount = movie.AudienceCount,
+                Genres = movie.Genres,
+                ReleaseDate = movie.ReleaseDate,
+                ImageUrl = movie.ImageUrl,
+                RuntimeMinutes = movie.RuntimeMinutes,
+                Language = movie.Language,
+                Director = movie.Director,
+                LeadActor = movie.LeadActor,
+                LeadActress = movie.LeadActress,
+                SupportingActors = movie.SupportingActors,
+                Period = movie.Period
             };
 
-            return Ok(response);
+            return Ok(result);
         }
-
 
         // POST: api/movies
         [HttpPost]
@@ -77,8 +82,6 @@ namespace MovieDbApi.Controllers
                 ImageUrl = movieDto.ImageUrl,
                 CreatedOn = DateTime.UtcNow,
                 IsDeleted = false,
-
-                // New fields
                 RuntimeMinutes = movieDto.RuntimeMinutes,
                 Language = movieDto.Language,
                 Director = movieDto.Director,
@@ -88,14 +91,15 @@ namespace MovieDbApi.Controllers
                 Period = movieDto.Period
             };
 
-            await _movieService.AddMovieAsync(movie);
+            await _movieRepository.AddAsync(movie);
             return CreatedAtAction(nameof(GetMovieById), new { id = movie.Id }, movieDto);
         }
 
+        // PUT: api/movies/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMovie(int id, [FromBody] GetMovieByIdDto movieDto)
         {
-            var existingMovie = await _movieService.GetMovieEntityByIdAsync(id);
+            var existingMovie = await _movieRepository.GetByIdAsync(id);
             if (existingMovie == null)
                 return NotFound(new { Message = $"Movie with ID {id} not found." });
 
@@ -107,8 +111,6 @@ namespace MovieDbApi.Controllers
             existingMovie.ReleaseDate = movieDto.ReleaseDate;
             existingMovie.ImageUrl = movieDto.ImageUrl;
             existingMovie.UpdatedOn = DateOnly.FromDateTime(DateTime.UtcNow);
-
-            // New fields
             existingMovie.RuntimeMinutes = movieDto.RuntimeMinutes;
             existingMovie.Language = movieDto.Language;
             existingMovie.Director = movieDto.Director;
@@ -117,59 +119,106 @@ namespace MovieDbApi.Controllers
             existingMovie.SupportingActors = movieDto.SupportingActors;
             existingMovie.Period = movieDto.Period;
 
-            await _movieService.UpdateMovieAsync(existingMovie);
+            await _movieRepository.UpdateAsync(existingMovie);
             return NoContent();
         }
-        // DELETE: api/movies/{id}  (Soft Delete)
+
+        // DELETE: api/movies/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMovie(int id)
         {
-            var existingMovie = await _movieService.GetMovieEntityByIdAsync(id); // Add helper in service
+            var existingMovie = await _movieRepository.GetByIdAsync(id);
             if (existingMovie == null)
                 return NotFound(new { Message = $"Movie with ID {id} not found." });
 
-            await _movieService.DeleteMovieAsync(existingMovie); // Soft delete
+            await _movieRepository.DeleteAsync(existingMovie);
             return NoContent();
         }
 
-        //For Pagination
+        // GET: api/movies/paged
         [HttpGet("paged")]
         public async Task<IActionResult> GetPaged([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             if (pageNumber <= 0 || pageSize <= 0)
                 return BadRequest("Page number and page size must be greater than 0.");
 
-            var (movies, totalCount) = await _movieService.GetPagedAsync(pageNumber, pageSize);
+            var (movies, totalCount) = await _movieRepository.GetPagedAsync(pageNumber, pageSize);
+
+            var movieDtos = movies.Select(m => new GetMovieDto
+            {
+                Id = m.Id,
+                Title = m.Title,
+                ReleaseDate = m.ReleaseDate,
+                ImageUrl = m.ImageUrl,
+                Language = m.Language,
+                AudienceRating = m.AudienceRating
+            });
 
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
-            var response = new
+            return Ok(new
             {
                 PageNumber = pageNumber,
                 PageSize = pageSize,
                 TotalPages = totalPages,
                 TotalCount = totalCount,
-                Movies = movies
-            };
-
-            return Ok(response);
+                Movies = movieDtos
+            });
         }
 
-        // GET: api/movies/filter?field=director&value=Mani%20Ratnam&pageNumber=1&pageSize=10
+        // GET: api/movies/search
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchMovies([FromQuery] string query, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+                return BadRequest(new { Message = "Query parameter cannot be empty." });
+
+            var (movies, totalCount) = await _movieRepository.SearchPagedAsync(query, pageNumber, pageSize);
+
+            var movieDtos = movies.Select(m => new GetMovieDto
+            {
+                Id = m.Id,
+                Title = m.Title,
+                ReleaseDate = m.ReleaseDate,
+                ImageUrl = m.ImageUrl,
+                Language = m.Language,
+                AudienceRating = m.AudienceRating
+            });
+
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            return Ok(new
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalPages = totalPages,
+                TotalCount = totalCount,
+                Movies = movieDtos
+            });
+        }
+
+        // GET: api/movies/filter
         [HttpGet("filter")]
-        public async Task<IActionResult> FilterMovies(
-            [FromQuery] string field,
-            [FromQuery] string value,
-            [FromQuery] int pageNumber = 1,
-            [FromQuery] int pageSize = 10)
+        public async Task<IActionResult> FilterMovies([FromQuery] string field, [FromQuery] string value, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             if (string.IsNullOrWhiteSpace(field) || string.IsNullOrWhiteSpace(value))
                 return BadRequest(new { Message = "Field and value parameters are required." });
 
-            var (movies, totalCount) = await _movieService.FilterByFieldAsync(field, value, pageNumber, pageSize);
+            var (movies, totalCount) = await _movieRepository.FilterByFieldAsync(field, value, pageNumber, pageSize);
+
+            var movieDtos = movies.Select(m => new GetMovieDto
+            {
+                Id = m.Id,
+                Title = m.Title,
+                ImageUrl = m.ImageUrl,
+                ReleaseDate = m.ReleaseDate,
+                Language = m.Language,
+                AudienceRating = m.AudienceRating
+            });
+
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
-            var response = new
+            return Ok(new
             {
                 Field = field,
                 Value = value,
@@ -177,12 +226,8 @@ namespace MovieDbApi.Controllers
                 PageSize = pageSize,
                 TotalPages = totalPages,
                 TotalCount = totalCount,
-                Movies = movies
-            };
-
-            return Ok(response);
+                Movies = movieDtos
+            });
         }
-
-
     }
 }

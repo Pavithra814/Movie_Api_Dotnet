@@ -54,14 +54,7 @@ namespace MovieDbApi.Repositories
         {
             var filteredQuery = _context.Movies
                 .Where(m => !m.IsDeleted &&
-                           (m.Title.Contains(query)));
-                            //m.Genres.Contains(query) ||
-                            //m.Language.Contains(query) ||
-                            //m.Director.Contains(query) ||
-                            //m.LeadActor.Contains(query) ||
-                            //m.LeadActress.Contains(query) ||
-                            //m.SupportingActors.Contains(query) ||
-                            //m.Period.Contains(query)));
+                            (m.Title.Contains(query)));
 
             var totalCount = await filteredQuery.CountAsync();
             var movies = await filteredQuery.Skip((pageNumber - 1) * pageSize)
@@ -101,9 +94,6 @@ namespace MovieDbApi.Repositories
                 case "leadactress":
                     query = query.Where(m => m.LeadActress != null && m.LeadActress.Contains(value));
                     break;
-                //case "audiencerating":
-                //    query = query.Where(m => m.AudienceRating != null && (m.AudienceRating > value));
-                //    break;
                 case "supportingactors":
                     query = query.Where(m => m.SupportingActors != null && m.SupportingActors.Contains(value));
                     break;
@@ -123,5 +113,5 @@ namespace MovieDbApi.Repositories
 
             return (movies, totalCount);
         }
-       }
+    }
 }
