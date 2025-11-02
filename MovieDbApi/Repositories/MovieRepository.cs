@@ -113,5 +113,11 @@ namespace MovieDbApi.Repositories
 
             return (movies, totalCount);
         }
+
+        public async Task<int> GetTotalCountAsync()
+        {
+            return await _context.Movies.CountAsync(m => !m.IsDeleted);
+        }
+
     }
 }

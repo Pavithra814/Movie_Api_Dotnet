@@ -27,6 +27,7 @@ namespace MovieDbApi.Repositories
                 .ToListAsync();
         }
 
+
         public async Task AddAsync(Favourite favourite)
         {
             await _context.Favourites.AddAsync(favourite);

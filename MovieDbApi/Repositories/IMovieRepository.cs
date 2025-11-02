@@ -12,5 +12,7 @@ namespace MovieDbApi.Repositories
         Task<(IEnumerable<Movie> Movies, int TotalCount)> SearchPagedAsync(string query, int pageNumber, int pageSize);
         Task<(IEnumerable<Movie> Movies, int TotalCount)> GetPagedAsync(int pageNumber, int pageSize);
         Task<(IEnumerable<Movie> Movies, int TotalCount)> FilterByFieldAsync(string field, string value, int pageNumber, int pageSize);
+        Task<int> GetTotalCountAsync();
+
     }
 }

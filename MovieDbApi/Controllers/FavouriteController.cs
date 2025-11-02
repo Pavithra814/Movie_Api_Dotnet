@@ -15,7 +15,6 @@ namespace MovieApi.Controllers
             _favouriteRepository = favouriteRepository;
         }
 
-        // GET: api/favourite/{userId}
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetByUserId(int userId)
         {
@@ -49,6 +48,7 @@ namespace MovieApi.Controllers
 
             return Ok(result);
         }
+
 
 
         // POST: api/favourite/toggle?userId=1&movieId=5

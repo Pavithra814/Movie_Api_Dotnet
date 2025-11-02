@@ -229,5 +229,14 @@ namespace MovieDbApi.Controllers
                 Movies = movieDtos
             });
         }
+
+        // GET: api/movies/count
+        [HttpGet("count")]
+        public async Task<IActionResult> GetMovieCount()
+        {
+            var totalCount = await _movieRepository.GetTotalCountAsync();
+            return Ok(new { TotalMovies = totalCount });
+        }
+
     }
 }
